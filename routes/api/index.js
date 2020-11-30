@@ -1,7 +1,7 @@
 const router = require("express").Router();
-const bookRoutes = require("./googleBooks");
+const bookRoutes = require("./google-books");
 
 // Book routes
-router.use("/googleBooks", bookRoutes);
+router.use("/Books", bookRoutes);
 
 module.exports = router;
