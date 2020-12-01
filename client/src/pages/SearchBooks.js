@@ -1,8 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Form, Button, Card, CardColumns } from "react-bootstrap";
 
-function SearchBooks() {
+import { saveBooks, searchGoogleBooks } from "../utils/API";
 
+function SearchBooks() {
+    // state for holding returned books from google api
+    const [searchBooks, setSearchBooks] = useState([]);
+
+    // state for holding our search field data
+    const [searchInput, setSearchInput] = useState('');
+
+    //Method to search books from google API
+    const handleFormSubmit = (event) => {
+        event.preventDefault();
+
+
+        //if there is no search input return
+        if(!searchInput) {
+            return false;
+        }   
+        
+        searchGoogleBooks(searchInput)
+            .then(({ data }) => {
+                const bookData = data.items.map((book) => ({
+                    bookId: book.id,
+                    authors: book.volumeInfo.authors || ['No author to display'],
+                    title: book.volumeInfo.title,
+                    description: book.volumeInfo.description,
+                    image: book.volumeInfo.imageLinks?.thumbnail || '',
+                }));
+                console.log(bookData);
+            });
+    }
 
     return (
         <div>
@@ -22,7 +51,7 @@ function SearchBooks() {
                 <Row>
                     <h5 style={{padding: "10px"}}>Results:</h5>
                     <Col xs={12} md={12}>
-                        
+
                     </Col>
                 </Row>
             </Container>
