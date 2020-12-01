@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Form, Button, Card, CardColumns } from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Input, Card,  CardColumns  } from "react-bootstrap";
 
-import { saveBooks, searchGoogleBooks } from "../utils/API";
+import { saveBook, searchGoogleBooks } from "../utils/API";
 
 function SearchBooks() {
     // state for holding returned books from google api
-    const [searchBooks, setSearchBooks] = useState([]);
+    const [searchedBooks, setSearchBooks] = useState([]);
 
     // state for holding our search field data
     const [searchInput, setSearchInput] = useState('');
@@ -13,13 +13,14 @@ function SearchBooks() {
     //Method to search books from google API
     const handleFormSubmit = (event) => {
         event.preventDefault();
+        console.log("pressed");
 
 
         //if there is no search input return
         if(!searchInput) {
             return false;
         }   
-        
+        //will search books from google API
         searchGoogleBooks(searchInput)
             .then(({ data }) => {
                 const bookData = data.items.map((book) => ({
@@ -30,32 +31,66 @@ function SearchBooks() {
                     image: book.volumeInfo.imageLinks?.thumbnail || '',
                 }));
                 console.log(bookData);
-            });
-    }
+
+                return setSearchBooks(bookData);
+            })
+            .then(() => setSearchInput(''))
+            .catch((err) => console.log(err));
+    };
+
+     // function to handle saving a book to our database
+     const handleSaveBook = (bookId) => {
+        // find the book in `searchedBooks` state by the matching id
+        const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
+
+        // send the books data to our api
+        saveBook(bookToSave)
+            .then(() => console.log('book saved!'))
+            .catch((err) => console.log(err));
+    };
+
 
     return (
-        <div>
+        <>
             <Container fluid style={{margin:"0 auto"}}>
                 {/* search for books  */}
-                <Form.Row>
-                    <Col xs={12} md={12}>
-                        <h5>Book Search</h5>
-                        <div className="input-group mb-3">
-                            <input type="text" className="form-control" placeholder="Find Book" />
-                        </div>
-                        <Button style={{float:"right"}} className="search-btn" variant="primary">Search</Button>
-                    </Col>
-                </Form.Row>
-
-                {/* when books are found display here */}
-                <Row>
-                    <h5 style={{padding: "10px"}}>Results:</h5>
-                    <Col xs={12} md={12}>
-
-                    </Col>
-                </Row>
+                <Form onSubmit={handleFormSubmit}>
+                    <Form.Row>
+                        <Col xs={12} md={12}>
+                            <Form.Control 
+                                name='searchInput'
+                                value={searchInput}
+                                onChange={(e) => setSearchInput(e.target.value)}
+                                type='text'
+                                size='lg'
+                                placeholder='Search for a book'
+                            />
+                            <Button style={{float:"right", margin: "10px"}} className="search-btn" variant="primary" type="submit">Search</Button>
+                        </Col>
+                    </Form.Row>
+                </Form>
             </Container>
-        </div>
+
+            <Container fluid>
+                <h2>Results: </h2>
+                <CardColumns>
+                    {searchedBooks.map((book) => {
+                        return (
+                            <Card key={book.bookId} border='dark'>
+                                {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> : null}
+                                <Card.Body>
+                                    <Card.Title>{book.title}</Card.Title>
+                                    <p className='small'>Authors: {book.authors}</p>
+                                    <Card.Text>{book.description}</Card.Text>
+                                    <Button style={{marginRight: "10px"}} className='save-btn' variant="success" size="sm" onClick={() => handleSaveBook(book.bookId)}>Save Book</Button>
+                                    <Button className='view-btn' variant="success" size="sm">View Book</Button>
+                                </Card.Body>
+                            </Card>
+                        );
+                    })}
+                </CardColumns>
+            </Container>
+        </>
     );
 }
 
