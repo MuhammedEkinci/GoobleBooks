@@ -40,6 +40,7 @@ function SavedBooks() {
                                     <p className='small'>Authors: {book.authors}</p>
                                     <Card.Text>{book.description}</Card.Text>
                                     <Button className='delete-btn' variant="danger" size="sm" onClick={() => handleDeleteBook(book._id)}>Delete</Button>
+                                    <Button className='view-btn' variant="success" size="sm" style={{margin: "10px"}}>View Book</Button>
                                 </Card.Body>
                             </Card>
                         );

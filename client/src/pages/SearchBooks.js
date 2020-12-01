@@ -82,8 +82,8 @@ function SearchBooks() {
                                     <Card.Title>{book.title}</Card.Title>
                                     <p className='small'>Authors: {book.authors}</p>
                                     <Card.Text>{book.description}</Card.Text>
-                                    <Button style={{marginRight: "10px"}} className='save-btn' variant="success" size="sm" onClick={() => handleSaveBook(book.bookId)}>Save Book</Button>
-                                    <Button className='view-btn' variant="success" size="sm">View Book</Button>
+                                    <Button className='save-btn' variant="success" size="sm" onClick={() => handleSaveBook(book.bookId)}>Save Book</Button>
+                                    <Button className='view-btn' variant="success" size="sm" style={{margin: "10px"}}>View Book</Button>
                                 </Card.Body>
                             </Card>
                         );
