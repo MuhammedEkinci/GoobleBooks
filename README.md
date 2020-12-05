@@ -12,3 +12,4 @@ This Application lets you search for a book that you want to checkout. You can s
 
 ## Demo Video
 
+link to video demo: https://youtu.be/jZ0rX0P7aMQ
